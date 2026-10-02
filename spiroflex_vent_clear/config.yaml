@@ -43,8 +43,8 @@ schema:
     identity_pool_id: str
   gateway:
     name: str
-    iot:
-      name: str
+  iot:
+    name: str
   installation:
     name: str
     id: str
