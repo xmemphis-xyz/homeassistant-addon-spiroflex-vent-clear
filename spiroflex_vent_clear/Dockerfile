@@ -20,8 +20,20 @@ LABEL \
   org.opencontainers.image.source="https://github.com/xmemphis-xyz/homeassistant-addon-spiroflex-vent-clear"
 
 COPY --from=builder /ventclear /usr/bin/ventclear
-COPY spiroflex_vent_clear/run.sh /run.sh
 
-RUN chmod +x /run.sh
+RUN printf '%s\n' \
+    '#!/usr/bin/with-contenv bashio' \
+    '' \
+    'if [ ! -f /data/options.json ]; then' \
+    '  bashio::log.error "Home Assistant app configuration is missing."' \
+    '  exit 1' \
+    'fi' \
+    '' \
+    'export SPIROFLEX_CONFIG_FILE="/data/options.json"' \
+    '' \
+    'bashio::log.info "Starting Spiroflex ecoVENT Simple REST bridge"' \
+    'exec /usr/bin/ventclear' \
+    > /run.sh \
+    && chmod +x /run.sh
 
 CMD ["/run.sh"]
