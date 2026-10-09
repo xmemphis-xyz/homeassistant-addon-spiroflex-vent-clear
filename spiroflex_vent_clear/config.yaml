@@ -1,5 +1,5 @@
 name: "Spiroflex ecoVENT Simple"
-version: "0.1.5"
+version: "0.1.6"
 slug: "spiroflex_vent_clear"
 description: "Go REST bridge for Spiroflex Vent Clear / ecoVENT Simple"
 url: "https://github.com/xmemphis-xyz/spiroflex-vent-clear"

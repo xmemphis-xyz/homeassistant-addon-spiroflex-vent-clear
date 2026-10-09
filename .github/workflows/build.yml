@@ -27,13 +27,23 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: xmemphis-xyz/spiroflex-vent-clear
+          ref: 301c5539c87e34f274c8c9aed92a089e21f4a801
           path: source
+
+      - name: Test pinned backend before publishing
+        working-directory: source
+        run: |
+          go test -race ./...
+          go vet ./...
+          python3 -m compileall -q custom_components
+          python3 -m unittest discover -s tests -p 'test_boost_*.py' -v
 
       - name: Read app version
         id: version
         shell: bash
         run: |
           VERSION="$(sed -n 's/^version: *"\([^"]*\)".*/\1/p' spiroflex_vent_clear/config.yaml)"
+          test -n "$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
