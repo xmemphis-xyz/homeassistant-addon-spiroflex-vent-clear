@@ -1,41 +1,16 @@
-# Spiroflex ecoVENT Simple
+undefined
+## Kominek timed mode (version 0.1.7)
 
-Home Assistant app that runs the Go REST bridge for Spiroflex Vent Clear / ecoVENT Simple.
+Version 0.1.7 includes the `/api/vent/fireplace/on` and `/off` endpoints
+and returns `fireplace_active` and `fireplace_remaining` in
+`/api/vent/status`.
 
-The app replaces the standalone `ventclear` process previously running on another server.
+Update this app to 0.1.7 before installing the matching HACS integration
+0.1.7. In Home Assistant, the device then includes **Kominek** after the two
+BOOST switches, plus its activity and remaining-time sensors.
 
-## Configuration
-
-Configure the ecoNET connection in the app configuration:
-
-- Region
-- Cognito username and password
-- Cognito User Pool ID
-- Cognito Client ID
-- Cognito Identity Pool ID
-- API Gateway name
-- AWS IoT name
-- Installation name and ID
-
-The REST API listens on port 8088.
-
-The configuration is stored by Home Assistant in the app data directory and is not committed to Git.
-
-## Home Assistant integration
-
-After starting the app, configure the **Spiroflex ecoVENT Simple** HACS integration to connect to the Home Assistant host on port 8088.
-
-For example:
-
-```
-Host: homeassistant.local
-Port: 8088
-```
-
-The Go service communicates directly with ecoNET/AWS IoT. The Home Assistant integration communicates only with its local REST API.
-
-## Testing
-
-Before removing the existing service from the other server, verify the REST status endpoint and the power/level controls.
-
-Keep the existing service available until the Home Assistant app has been tested successfully.
+The user verified that the third timed mode sets u6639 to 256, u7429 to
+10 minutes, and fan speed from 40/40% to 100/10%. The new writable API
+requires a separate live test on the controller: test ON/OFF manually
+before enabling any hood-driven automation. Timed writes are serialized,
+masked to the selected mode bit, and read back before being confirmed.

@@ -1,42 +1,11 @@
-# Spiroflex ecoVENT Simple Home Assistant App
+undefined
+## Timed modes (0.1.7)
 
-Home Assistant App that runs the Go REST bridge for Spiroflex Vent Clear / ecoVENT Simple.
+The Go REST bridge supports BOOST 1, BOOST 2, and Kominek (fireplace)
+with individually controllable ON/OFF endpoints and controller-confirmed
+state and countdown values. Update the app to **0.1.7** before updating
+the HACS integration to **0.1.7**. Existing Home Assistant entities
+remain in place; the Kominek switch and sensors are added.
 
-The app replaces the standalone `ventclear` process previously running on another server.
-
-## Installation
-
-In Home Assistant:
-
-1. Go to **Settings → Apps → App repositories**.
-2. Add:
-
-```
-https://github.com/xmemphis-xyz/homeassistant-addon-spiroflex-vent-clear
-```
-
-3. Open the **Apps** section.
-4. Install **Spiroflex ecoVENT Simple**.
-
-## Configuration
-
-Configure the ecoNET connection in the app configuration:
-
-- Region
-- Cognito username and password
-- Cognito User Pool ID
-- Cognito Client ID
-- Cognito Identity Pool ID
-- API Gateway name
-- AWS IoT name
-- Installation name and ID
-
-The REST API listens on port **8088**.
-
-The configuration is stored by Home Assistant and is not committed to Git.
-
-## Home Assistant integration
-
-After starting the app, configure the **Spiroflex ecoVENT Simple** HACS integration to connect to the Home Assistant host on port 8088.
-
-Keep the existing service on the old server running until the new app has been tested successfully.
+Kominek ON/OFF still requires a real-device verification after installing
+0.1.7. Do not enable automatic cooker-hood control before this test.
