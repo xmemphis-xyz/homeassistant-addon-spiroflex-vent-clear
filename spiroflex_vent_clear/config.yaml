@@ -1,5 +1,5 @@
 name: "Spiroflex ecoVENT Simple"
-version: "0.1.7"
+version: "0.1.8"
 slug: "spiroflex_vent_clear"
 description: "Go REST bridge for Spiroflex Vent Clear / ecoVENT Simple"
 url: "https://github.com/xmemphis-xyz/spiroflex-vent-clear"
@@ -16,38 +16,30 @@ ports_description:
   8088/tcp: "Spiroflex REST API"
 watchdog: "tcp://[HOST]:[PORT:8088]"
 options:
-  region: "eu-west-3"
   cognito:
     username: ""
     password: ""
-    user_pool_id: ""
-    client_id: ""
-    identity_pool_id: ""
-  gateway:
-    name: ""
-  iot:
-    name: ""
-  installation:
-    name: "ecoVENT Simple"
-    id: ""
+  gateway: {}
+  iot: {}
+  installation: {}
   api:
     endpoint: "0.0.0.0:8088"
     rest: true
 schema:
-  region: str
+  region: "str?"
   cognito:
     username: str
     password: password
-    user_pool_id: str
-    client_id: str
-    identity_pool_id: str
+    user_pool_id: "str?"
+    client_id: "str?"
+    identity_pool_id: "str?"
   gateway:
-    name: str
+    name: "str?"
   iot:
-    name: str
+    name: "str?"
   installation:
-    name: str
-    id: str
+    name: "str?"
+    id: "str?"
   api:
     endpoint: str
     rest: bool

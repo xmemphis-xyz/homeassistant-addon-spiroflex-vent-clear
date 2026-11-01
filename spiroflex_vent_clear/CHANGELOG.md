@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.8
+
+- Only the Spiroflex / ecoNET mobile app **username and password** are required.
+- Backend identifiers are now built in: region, Cognito pools, app client, API Gateway and IoT endpoint. They are optional overrides in the app configuration.
+- The installation is discovered automatically after login. If the account has several installations, set `installation.name` or `installation.id`. The app log lists the available installations.
+- Existing configurations keep working unchanged. Leftover placeholder values from older versions (`region: eu-west-3` with empty identifiers) are replaced with the built-in defaults.
+- Backend source pinned to commit 0ca9075f15bdb43ecfa50f3df08aaf8029fdf88c.
+
 ## 0.1.6
 
 - Added per-mode BOOST cancellation endpoints: POST /api/vent/boost/1/off and /api/vent/boost/2/off.
