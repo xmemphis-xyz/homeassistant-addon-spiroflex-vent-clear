@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: xmemphis-xyz/spiroflex-vent-clear
-          ref: 120c8fd6236f0e010e1f33b4bcb6da697fa8374e
+          ref: 0ca9075f15bdb43ecfa50f3df08aaf8029fdf88c
           path: source
 
       - name: Test pinned backend before publishing

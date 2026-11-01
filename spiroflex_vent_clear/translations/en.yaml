@@ -1,0 +1,23 @@
+configuration:
+  cognito:
+    name: ecoNET account
+    description: >-
+      Username (e-mail) and password from the Spiroflex / ecoNET mobile app.
+      The remaining fields are optional overrides of built-in backend values.
+  region:
+    name: AWS region (optional)
+    description: Leave empty to use the built-in value (eu-central-1).
+  gateway:
+    name: API Gateway (optional)
+    description: Leave empty to use the built-in value.
+  iot:
+    name: IoT endpoint (optional)
+    description: Leave empty to use the built-in value.
+  installation:
+    name: Installation (optional)
+    description: >-
+      Detected automatically. Set the name or ID only if your account has
+      more than one installation.
+  api:
+    name: REST API
+    description: Listen address and REST switch for the local API.
