@@ -1,0 +1,89 @@
+name: Sync backend release
+
+# Checks the backend repository for a new GitHub release. When the latest
+# release points to a different commit than spiroflex_vent_clear/backend.json,
+# opens a PR that pins the new commit, bumps the app version and adds a
+# changelog entry. Merging that PR triggers "Build and publish Home Assistant
+# app".
+#
+# Opening the PR requires: Settings -> Actions -> General -> Workflow
+# permissions -> "Allow GitHub Actions to create and approve pull requests".
+# Without it the branch is still pushed and the run summary links to it.
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-backend
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Find latest backend release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          repo=$(jq -er .repository spiroflex_vent_clear/backend.json)
+          current=$(jq -er .commit spiroflex_vent_clear/backend.json)
+          tag=$(gh api "repos/$repo/releases/latest" --jq .tag_name)
+          commit=$(gh api "repos/$repo/commits/$tag" --jq .sha)
+          gh api "repos/$repo/releases/tags/$tag" --jq '.body // ""' > "$RUNNER_TEMP/backend_notes.md"
+          branch="backend/$tag"
+          echo "Latest backend release: $tag ($commit), pinned: $current"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          if [ "$commit" = "$current" ]; then
+            echo "update=false" >> "$GITHUB_OUTPUT"
+            echo "Already pinned to $tag." >> "$GITHUB_STEP_SUMMARY"
+          elif git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "update=false" >> "$GITHUB_OUTPUT"
+            echo "Branch $branch already exists; review its PR." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update pin, version and changelog
+        if: steps.release.outputs.update == 'true'
+        id: bump
+        run: |
+          version=$(python3 .github/scripts/sync_backend.py spiroflex_vent_clear \
+            "${{ steps.release.outputs.tag }}" "${{ steps.release.outputs.commit }}" \
+            "$RUNNER_TEMP/backend_notes.md")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          git diff
+
+      - name: Push branch and open PR
+        if: steps.release.outputs.update == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.release.outputs.branch }}
+          TAG: ${{ steps.release.outputs.tag }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git commit -am "$VERSION: update backend to $TAG"
+          git push origin "$BRANCH"
+          body="Pins the backend to $TAG and bumps the app to $VERSION. Merging publishes the image ghcr.io/xmemphis-xyz/spiroflex-vent-clear:$VERSION."
+          if gh pr create --base main --head "$BRANCH" --title "$VERSION: update backend to $TAG" --body "$body"; then
+            echo "Opened PR for $TAG (app $VERSION)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            url="https://github.com/$GITHUB_REPOSITORY/compare/main...$BRANCH?expand=1"
+            echo "::warning::Could not open a PR automatically. Create it here: $url"
+            echo "Branch pushed but PR not created (enable 'Allow GitHub Actions to create and approve pull requests'). Create it: $url" >> "$GITHUB_STEP_SUMMARY"
+          fi

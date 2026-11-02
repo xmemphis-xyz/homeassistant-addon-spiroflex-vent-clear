@@ -23,11 +23,20 @@ jobs:
       - name: Check out app repository
         uses: actions/checkout@v6
 
+      # The pinned backend lives in spiroflex_vent_clear/backend.json so that
+      # the sync-backend workflow can update it without editing workflows.
+      - name: Read pinned backend
+        id: backend
+        shell: bash
+        run: |
+          echo "repository=$(jq -er .repository spiroflex_vent_clear/backend.json)" >> "$GITHUB_OUTPUT"
+          echo "commit=$(jq -er .commit spiroflex_vent_clear/backend.json)" >> "$GITHUB_OUTPUT"
+
       - name: Check out Go source repository
         uses: actions/checkout@v6
         with:
-          repository: xmemphis-xyz/spiroflex-vent-clear
-          ref: 96aec6e4507cbdbe4e5d307b505fde6bbebeee41
+          repository: ${{ steps.backend.outputs.repository }}
+          ref: ${{ steps.backend.outputs.commit }}
           path: source
 
       - name: Test pinned backend before publishing
