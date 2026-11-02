@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.10
+
+- App marked as **stable**. BOOST 1/2 and Kominek ON/OFF have been verified on a real controller.
+- No code changes. The backend is the same as in 0.1.9.
+
 ## 0.1.9
 
 - Fixed HTTP 502 `GET_VALUES target failed, status code: 1` from `/api/vent/status` on controllers that return `"err"` for `u7151`.

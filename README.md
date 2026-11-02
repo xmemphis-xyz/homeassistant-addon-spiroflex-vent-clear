@@ -7,5 +7,4 @@ state and countdown values. Update the app to **0.1.7** before updating
 the HACS integration to **0.1.7**. Existing Home Assistant entities
 remain in place; the Kominek switch and sensors are added.
 
-Kominek ON/OFF still requires a real-device verification after installing
-0.1.7. Do not enable automatic cooker-hood control before this test.
+Kominek ON/OFF has been verified on a real device (2026-11-02).
