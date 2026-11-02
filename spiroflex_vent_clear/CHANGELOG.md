@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+- Fixed HTTP 502 `GET_VALUES target failed, status code: 1` from `/api/vent/status` on controllers that return `"err"` for `u7151`.
+- The operating status then shows *unknown*, and all other entities keep working. Unreadable parameters are written to the app log.
+- Backend source pinned to commit 96aec6e (backend release v0.1.9).
+
 ## 0.1.8
 
 - Only the Spiroflex / ecoNET mobile app **username and password** are required.
